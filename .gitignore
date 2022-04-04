@@ -2,9 +2,10 @@
 
 # dependencies
 /node_modules
+node_modules
+mediumclone/node_modules
 /.pnp
 .pnp.js
-
 # testing
 /coverage
 
