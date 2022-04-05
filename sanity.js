@@ -1,6 +1,7 @@
 import { createClient } from 'next-sanity'
+import createImageUrlBuilder from '@sanity/image-url'
 // lib/config.js
-export const config = {     
+export const config = {
     /**
      * Find your project ID and dataset in `sanity.json` in your studio project.
      * These are considered “public”, but you can use environment variables

@@ -11,8 +11,7 @@ interface Props {
   posts: [Post]
 }
 
-const Home: NextPage = ({ posts }: Props) => {
-  console.log(posts)
+const Home: NextPage = (props: Props) => {
   return (
     <div className="mx-auto max-w-7xl">
       <Head>
@@ -20,7 +19,7 @@ const Home: NextPage = ({ posts }: Props) => {
       </Head>
       <Header />
       <Hero />
-      <Posts />
+      <Posts posts={props.posts} />
     </div>
   )
 }
@@ -52,4 +51,3 @@ mainImage,
     },
   }
 }
-  
