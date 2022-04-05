@@ -1,5 +1,5 @@
 {
-  "name": "Medium-clone-Siddhesh_Bhupendra_Kukade",
+  "name": "medium-clone",
   "version": "0.0.1",
   "description": "This is a Medium.com Clone Project Built By @SiddheshKukade Using NextJs Sanity.io and Typescript",
   "publishConfig": {
