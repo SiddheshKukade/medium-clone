@@ -1,4 +1,7 @@
 {
+  "name": "Medium-clone-Siddhesh_Bhupendra_Kukade",
+  "version": "0.0.1",
+  "description": "This is a Medium.com Clone Project Built By @SiddheshKukade Using NextJs Sanity.io and Typescript",
   "private": true,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@SiddheshKukade"
