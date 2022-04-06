@@ -2,14 +2,101 @@ import { GetStaticProps } from 'next'
 import Header from './../../components/Header'
 import { urlFor, sanityClient } from './../../sanity'
 import { Post } from '../../typing'
+import PortableText from 'react-portable-text'
+import { useForm, SubmitHandler } from 'react-hook-form'
 interface Props {
   post: Post
 }
+interface IformInput {
+  _id: string
+  name: string
+  email: string
+  comment: string
+}
 function Post({ post }: Props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
   console.log(post)
   return (
     <main>
       <Header />
+      <img
+        className="h-40 w-full object-cover"
+        src={urlFor(post.mainImage).url()!}
+      />
+      <article className="mx-auto max-w-3xl p-5   ">
+        <h1 className="mt-10 mb-3 text-3xl">{post.title}</h1>
+        <h2 className="text-xl font-light text-gray-500">{post.description}</h2>
+        <div className="flex items-center space-x-2 py-3 ">
+          <img
+            className="h-10 w-10 rounded-full"
+            src={urlFor(post.author.image).url()!}
+            alt=""
+          />
+          <p className="text-sm font-extralight">
+            Blog post by{' '}
+            <span className="text-green-600">{post.author.name}</span> -
+            Published at {new Date(post._createdAt).toLocaleString()}
+          </p>
+        </div>
+
+        <div>
+          <PortableText
+            className=""
+            dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
+            projectId={process.env.NODE_PUBLIC_SANITY_PROJECT_ID}
+            content={post.body}
+            serializers={{
+              h1: (props: any) => (
+                <h1 className="my-5 text-2xl font-bold" {...props} />
+              ),
+              h2: (props: any) => (
+                <h1 className="my-5 text-xl font-bold" {...props} />
+              ),
+              li: ({ children }: any) => (
+                <li className="ml-4 list-disc">{children}</li>
+              ),
+              link: ({ href, children }: any) => (
+                <a href={href} className="text-blue-500">
+                  {children}
+                </a>
+              ),
+            }}
+          />
+        </div>
+      </article>
+      <hr className="my-5 mx-auto max-w-lg border border-yellow-500" />
+      <form className="mx-auto mb-10 flex max-w-2xl flex-col p-5 ">
+        <h3 className="text-sm text-yellow-500">Enjoyed this article ? </h3>
+        <h4 className="text-3xl font-bold">Leave a comment below !</h4>
+        <label className="mb-5 block">
+          <span className="text-gray-700">Name</span>
+          <input
+            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline  ring-yellow-500 focus:ring"
+            placeholder="Ex.Siddhesh Kukade"
+            type="text"
+          />
+        </label>
+        <label className="mb-5 block">
+          <span className="text-gray-700">Email</span>
+          <input
+            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
+            placeholder="Ex. siddheshkukade2003@gmail.com"
+            type="text"
+          />
+        </label>
+        <label className="mb-5 block">
+          <span className="text-gray-700">Comment</span>
+          <textarea
+            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
+            placeholder="Ex.Siddhesh Kukade"
+            rows={8}
+          />
+        </label>
+      </form>
     </main>
   )
 }
