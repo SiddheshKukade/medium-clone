@@ -34,20 +34,23 @@ export const getStaticPaths = async () => {
   //blocking will show empty page or a 404 page if the path is not found under the paths
 }
 // this will use the path from the getStaticPaths function and will get the data for each path and then will render it so it is Server Side Rendering
+// If you export a function called getStaticProps (Static Site Generation) from a page, Next.js will pre-render this page at build time using the props returned by getStaticProps.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  // the params contains something like  this {slug: 'an-article-on-learning'}
+  console.log('th', params)
   //the posts whose slug matches with the cureent  slug will be returned
-  const query = `*[_type == "post" && slug.current == $slug][0]{
-        title,
-        _id,
-        _createdAt,
+  const query = `*[_type == "post" && slug.current == $slug ][0]{
+    _id,
+    _createdAt,
+    title,
         author -> {
             name,
             image
         },
-        comment -> {
-          _type == "comment"
+        'comments':*[
+          _type == "comment" &&
           post._ref == ^._id && approved == true ],
-        description,
+        description,  
         slug,
         mainImage,
         body
@@ -66,5 +69,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       post,
     },
+    revalidate: 60, // after 60 second it will regernate the  page
   }
 }
