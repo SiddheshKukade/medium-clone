@@ -4,6 +4,7 @@ import { urlFor, sanityClient } from './../../sanity'
 import { Post } from '../../typing'
 import PortableText from 'react-portable-text'
 import { useForm, SubmitHandler } from 'react-hook-form'
+import { useState } from 'react'
 interface Props {
   post: Post
 }
@@ -14,11 +15,24 @@ interface IformInput {
   comment: string
 }
 function Post({ post }: Props) {
+  const [submitted, setSubmitted] = useState(false)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  const onSubmit: SubmitHandler<IformInput> = async (data) => {
+    setSubmitted(true)
+    console.log('data from slug', data)
+    await fetch('/api/createComment', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then((data) => console.log())
+      .catch((err) => console.log(err))
+  }
+
   console.log(post)
   return (
     <main>
@@ -69,34 +83,72 @@ function Post({ post }: Props) {
         </div>
       </article>
       <hr className="my-5 mx-auto max-w-lg border border-yellow-500" />
-      <form className="mx-auto mb-10 flex max-w-2xl flex-col p-5 ">
-        <h3 className="text-sm text-yellow-500">Enjoyed this article ? </h3>
-        <h4 className="text-3xl font-bold">Leave a comment below !</h4>
-        <label className="mb-5 block">
-          <span className="text-gray-700">Name</span>
+      {submitted ? (
+        <div className="my-10 mx-auto flex max-w-2xl flex-col bg-yellow-500 py-10 px-5 text-white ">
+          <h3 className="text-3xl font-bold">Thank you for the comment ! </h3>
+          <p>Once it is approved , it will appear below</p>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mx-auto mb-10 flex max-w-2xl flex-col p-5 "
+        >
+          <h3 className="text-sm text-yellow-500">Enjoyed this article ? </h3>
+          <h4 className="text-3xl font-bold">Leave a comment below !</h4>
+          <label className="mb-5 block">
+            {/* register is used to do the connection to the react hook form which allows us to pull the data */}
+            <input
+              type="hidden"
+              {...register('_id')}
+              value={post._id}
+              name="_id"
+            />
+
+            <span className="text-gray-700">Name</span>
+            <input
+              {...register('name', { required: true })}
+              className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline  ring-yellow-500 focus:ring"
+              placeholder="Ex.Siddhesh Kukade"
+              type="text"
+            />
+          </label>
+          <label className="mb-5 block">
+            <span className="text-gray-700">Email</span>
+            <input
+              {...register('email', { required: true })}
+              className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
+              placeholder="Ex. siddheshkukade2003@gmail.com"
+              type="EMAIL"
+            />
+          </label>
+          <label className="mb-5 block">
+            <span className="text-gray-700">Comment</span>
+            <textarea
+              {...register('comment', { required: true })}
+              className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
+              placeholder="Ex.Siddhesh Kukade"
+              rows={8}
+            />
+          </label>
+          <div className="flex flex-col p-5 ">
+            {errors.name && (
+              <span className="text-red-500">The Name field is requried</span>
+            )}
+            {errors.email && (
+              <span className="text-red-500">The Email field is requried</span>
+            )}
+            {errors.comment && (
+              <span className="text-red-500">
+                The Comment field is requried
+              </span>
+            )}
+          </div>
           <input
-            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline  ring-yellow-500 focus:ring"
-            placeholder="Ex.Siddhesh Kukade"
-            type="text"
+            type="submit"
+            className="focus:shadow-outline cursor-pointer rounded bg-yellow-500 py-2 px-4 font-bold text-white hover:bg-yellow-400 focus:outline-none"
           />
-        </label>
-        <label className="mb-5 block">
-          <span className="text-gray-700">Email</span>
-          <input
-            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
-            placeholder="Ex. siddheshkukade2003@gmail.com"
-            type="text"
-          />
-        </label>
-        <label className="mb-5 block">
-          <span className="text-gray-700">Comment</span>
-          <textarea
-            className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline ring-yellow-500 focus:ring"
-            placeholder="Ex.Siddhesh Kukade"
-            rows={8}
-          />
-        </label>
-      </form>
+        </form>
+      )}
     </main>
   )
 }
