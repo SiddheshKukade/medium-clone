@@ -95,6 +95,7 @@ function Post({ post }: Props) {
         </div>
       ) : (
         <form
+            // @ts-ignore
           onSubmit={handleSubmit(onSubmit)}
           className="mx-auto mb-10 flex max-w-2xl flex-col p-5 "
         >
