@@ -11,7 +11,7 @@ interface Props {
   posts: [Post]
 }
 
-const Home: NextPage = (props: Props) => {
+const Home: NextPage<Props> = (props) => {
   return (
     <div className="mx-auto max-w-7xl">
       <Head>
