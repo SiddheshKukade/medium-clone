@@ -23,14 +23,19 @@ function Post({ post }: Props) {
   } = useForm()
 
   const onSubmit: SubmitHandler<IformInput> = async (data) => {
-    setSubmitted(true)
     console.log('data from slug', data)
     await fetch('/api/createComment', {
       method: 'POST',
       body: JSON.stringify(data),
     })
-      .then((data) => console.log())
-      .catch((err) => console.log(err))
+      .then((data) => {
+        console.log()
+        setSubmitted(true)
+      })
+      .catch((err) => {
+        setSubmitted(false)
+        console.log(err)
+      })
   }
 
   console.log(post)
@@ -149,6 +154,19 @@ function Post({ post }: Props) {
           />
         </form>
       )}
+      {/* Comments  */}
+      <div className="my-10 mx-auto flex max-w-2xl flex-col space-y-2 p-10 shadow shadow-yellow-500">
+        <h3 className="text-4xl">Comments</h3>
+        <hr className="pb-2" />
+        {post.comments.map((comment) => (
+          <div key={comment._id}>
+            <p>
+              <span className="text-yellow-500">{comment.name}</span>:
+              {comment.comment}
+            </p>
+          </div>
+        ))}
+      </div>
     </main>
   )
 }
@@ -176,7 +194,6 @@ export const getStaticPaths = async () => {
 // If you export a function called getStaticProps (Static Site Generation) from a page, Next.js will pre-render this page at build time using the props returned by getStaticProps.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // the params contains something like  this {slug: 'an-article-on-learning'}
-  console.log('th', params)
   //the posts whose slug matches with the cureent  slug will be returned
   const query = `*[_type == "post" && slug.current == $slug ][0]{
     _id,
